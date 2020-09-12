@@ -31,8 +31,13 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         //
-
         parent::boot();
+    }
+
+    public function register()
+    {
+        $this->app->singleton('accept', '\App\Http\Parser\Accept');
+        parent::register();
     }
 
     /**
