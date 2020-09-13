@@ -3,6 +3,8 @@
 
 namespace App\Modules\Users\Services;
 
+use App\Exceptions\StoreResourceFailedException;
+use App\Interfaces\DAO\IAuthLoginDAO;
 use App\Interfaces\DAO\IUserAuthDAO;
 use App\Interfaces\DAO\IUserCreateDAO;
 use App\Modules\Users\DAO\UserAuthDAO;
@@ -36,7 +38,20 @@ class UserAuthAggregator
      */
     public function createAndAuthorize(IUserCreateDAO $dao):IUserAuthDAO
     {
+        if ($this->userRepository->create($dao)) {
+            /**
+             * @var IAuthLoginDAO $authDao
+             */
+            $authDao = $this->authRepository->login($dao->getEmail(), $dao->getPassword());
 
-        return new UserAuthDAO();
+            return new UserAuthDAO(
+                $dao->getEmail(),
+                $dao->getName(),
+                $authDao->getToken(),
+                $authDao->getExpire()
+            );
+        }
+
+        throw new StoreResourceFailedException('User has not been saved!');
     }
 }

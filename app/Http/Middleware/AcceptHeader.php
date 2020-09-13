@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Exceptions\AcceptHeaderException;
 use Closure;
 
 class AcceptHeader
@@ -9,7 +10,7 @@ class AcceptHeader
     public function handle($request, Closure $next)
     {
         if (!app()->get('accept')->isAvailableFormat($request)) {
-            return response()->json([], 406);
+            throw new AcceptHeaderException('Accept format is not supported');
         }
 
         return $next($request);

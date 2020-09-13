@@ -4,15 +4,8 @@
 namespace App\Interfaces\DAO;
 
 
-interface IUserAuthDAO
+interface IAuthLoginDAO
 {
-    public function getName(): string;
-
-    /**
-     * @return string
-     */
-    public function getEmail(): string;
-
     /**
      * @return string
      */

@@ -1,13 +1,14 @@
 <?php
 
 
-namespace App\Modules\Users\Services;
+namespace App\Modules\Auth\App;
 
 
+use App\Interfaces\App\IAuth;
 use App\Interfaces\DAO\IAuthLoginDAO;
 use App\Interfaces\Services\IAuthService;
 
-class AuthRepository
+class Auth implements IAuth
 {
     private $service;
 
