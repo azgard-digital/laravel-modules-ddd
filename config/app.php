@@ -174,7 +174,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\Modules\Api\V1\ApiV1ServiceProvider::class,
+        App\Modules\Transactions\TransactionsServiceProvider::class,
         App\Modules\Auth\AuthServiceProvider::class,
         App\Modules\Users\UsersServiceProvider::class,
         App\Modules\Wallets\WalletsServiceProvider::class,

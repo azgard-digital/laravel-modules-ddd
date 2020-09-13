@@ -54,4 +54,65 @@ abstract class WalletRepository
             throw new ServerException('Server error');
         }
     }
+
+    public static function isExistUserWallet(int $user, string $address):bool
+    {
+        try {
+            return Wallet::query()
+                ->where('user_id', $user)
+                ->where('address', $address)
+                ->exists();
+
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            throw new ServerException('Server error');
+        }
+    }
+
+    public static function processTransaction(string $from, string $to, int $amount, int $fee):bool
+    {
+        try {
+            $walletFrom = Wallet::query()
+                ->where('address', $from)
+                ->first();
+
+            $walletFromBalance = $walletFrom->getAttribute('balance');
+
+            if ($walletFromBalance < ($amount + $fee)) {
+                throw new ResourceException('Not enough money for transaction');
+            }
+
+            $walletTo = Wallet::query()
+                ->where('address', $to)
+                ->first();
+
+            $walletToBalance = $walletTo->getAttribute('balance');
+
+            $walletFrom->balance = $walletFromBalance - ($amount + $fee);
+            $walletTo->balance = $walletToBalance + $amount;
+
+            $walletFrom->save();
+            $walletTo->save();
+
+            return true;
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            throw new ServerException('Server error');
+        }
+    }
+
+    public static function getWalletIdByAddress(string $address):int
+    {
+        try {
+            $wallet = Wallet::query()
+                ->select(['id'])
+                ->where('address', $address)
+                ->first();
+
+            return (int)$wallet->getAttribute('id');
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            throw new ServerException('Server error');
+        }
+    }
 }

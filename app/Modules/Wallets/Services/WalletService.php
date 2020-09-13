@@ -59,4 +59,19 @@ class WalletService implements IWalletService
     {
         return $this->walletRepository->count($userId);
     }
+
+    public function isExistUserWallet(int $userId, string $address):bool
+    {
+        return $this->walletRepository->isExistUserWallet($userId, $address);
+    }
+
+    public function processTransaction(string $from, string $to, int $amount, int $fee):bool
+    {
+        return $this->walletRepository->processTransaction($from, $to, $amount, $fee);
+    }
+
+    public function getWalletIdByAddress(string $address):int
+    {
+        return $this->walletRepository->getWalletIdByAddress($address);
+    }
 }

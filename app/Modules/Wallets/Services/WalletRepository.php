@@ -3,7 +3,6 @@
 
 namespace App\Modules\Wallets\Services;
 
-use App\Interfaces\DAO\IWalletDAO;
 use App\Modules\Wallets\Models\WalletRepository as Model;
 
 class WalletRepository
@@ -27,4 +26,20 @@ class WalletRepository
     {
         return md5(uniqid($userId));
     }
+
+    public function isExistUserWallet(int $userId, string $address):bool
+    {
+        return Model::isExistUserWallet($userId, $address);
+    }
+
+    public function processTransaction(string $from, string $to, int $amount, int $fee):bool
+    {
+        return Model::processTransaction($from, $to, $amount, $fee);
+    }
+
+    public function getWalletIdByAddress(string $address):int
+    {
+        return Model::getWalletIdByAddress($address);
+    }
+
 }

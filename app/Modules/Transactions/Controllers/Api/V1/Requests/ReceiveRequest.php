@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Wallets\Controllers\Api\V1\Requests;
+namespace App\Modules\Transactions\Controllers\Api\V1\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
