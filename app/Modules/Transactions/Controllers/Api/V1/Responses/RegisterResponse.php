@@ -17,6 +17,11 @@ class RegisterResponse extends JsonResource
     public function toArray($request)
     {
         return [
+            'amount' => $this->resource->getAmount(),
+            'from' => $this->resource->getFrom(),
+            'to' => $this->resource->getTo(),
+            'fee' => $this->resource->getFee(),
+            'result' => $this->resource->getResult(),
         ];
     }
 }

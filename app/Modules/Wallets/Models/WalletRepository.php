@@ -6,6 +6,7 @@ namespace App\Modules\Wallets\Models;
 use App\Exceptions\ResourceException;
 use App\Exceptions\ServerException;
 use App\Exceptions\StoreResourceFailedException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 abstract class WalletRepository
@@ -72,18 +73,23 @@ abstract class WalletRepository
     public static function processTransaction(string $from, string $to, int $amount, int $fee):bool
     {
         try {
+            DB::beginTransaction();
+            DB::statement('SET TRANSACTION ISOLATION LEVEL SERIALIZABLE');
             $walletFrom = Wallet::query()
                 ->where('address', $from)
+                ->lockForUpdate()
                 ->first();
 
             $walletFromBalance = $walletFrom->getAttribute('balance');
 
             if ($walletFromBalance < ($amount + $fee)) {
+                DB::rollBack();
                 throw new ResourceException('Not enough money for transaction');
             }
 
             $walletTo = Wallet::query()
                 ->where('address', $to)
+                ->lockForUpdate()
                 ->first();
 
             $walletToBalance = $walletTo->getAttribute('balance');
@@ -93,12 +99,14 @@ abstract class WalletRepository
 
             $walletFrom->save();
             $walletTo->save();
-
+            DB::commit();
             return true;
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::error($e->getMessage());
-            throw new ServerException('Server error');
         }
+
+        return false;
     }
 
     public static function getWalletIdByAddress(string $address):int

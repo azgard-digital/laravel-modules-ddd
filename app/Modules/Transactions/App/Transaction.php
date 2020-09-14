@@ -5,6 +5,7 @@ namespace App\Modules\Transactions\App;
 
 
 use App\Interfaces\App\ITransaction;
+use App\Interfaces\DAO\ITransactionDAO;
 use App\Interfaces\Services\ITransactionService;
 
 class Transaction implements ITransaction
@@ -16,7 +17,7 @@ class Transaction implements ITransaction
         $this->service = $service;
     }
 
-    public function create(int $userId, string $from, string $to, int $amount)
+    public function create(int $userId, string $from, string $to, int $amount):ITransactionDAO
     {
         return $this->service->create($userId, $from, $to, $amount);
     }

@@ -33,7 +33,7 @@ services:
       - ./dockers/config/php/www.conf:/usr/local/etc/php-fpm.d/www.conf
       - ./:/var/www
     environment:
-      XDEBUG_CONFIG: "remote_host=192.168.0.104 remote_enable=1 remote_autostart=off remote_port=9008 max_nesting_level=700"
+      XDEBUG_CONFIG: "remote_host=192.168.0.104 remote_enable=1 remote_autostart=off remote_port=9008 max_nesting_level=500"
       PHP_IDE_CONFIG: "serverName=1"
       DB_HOST: postgresql-a
       DB_PORT: 5432
