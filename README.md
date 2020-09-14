@@ -38,7 +38,7 @@ docker build -t paxfuly_hw -f dockers/Dockerfile .
 docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' postgres
 ```
 
-- Add to DB_HOST mysql container name or ip
+- Add to DB_HOST postgres container name or ip
 - Run app image
 ```
 docker run -it -p 80:80 --network paxfuly-net -e DB_HOST=? -e DB_PORT=5432 -e DB_DATABASE=? \
@@ -99,7 +99,6 @@ curl --location --request GET 'http://mytest.local/api/wallets/6c83136b0e990f173
 ```
 curl --location --request GET 'http://mytest.local/api/wallets/6c83136b0e990f17324ce3d692ccc636/transactions' \
 --header 'Content-Type: application/json' \
---header 'Cookie: XDEBUG_SESSION=www-data' \
 --header 'Cache-Control: no-cache' \
 --header 'Accept: application/json; version=v1' \
 --header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9teXRlc3QubG9jYWxcL2FwaVwvYXV0aFwvbG9naW4iLCJpYXQiOjE2MDAwNjI0MTYsImV4cCI6MTYwNTI0NjQxNiwibmJmIjoxNjAwMDYyNDE2LCJqdGkiOiJBUUhFMGpjVGg5ME5oWHBBIiwic3ViIjoxLCJwcnYiOiIxZWFmOTI5NDc5M2QxMjVhYTBmZWU0ZWMzYWQ1OWQ5ZDVmYzE2MGMxIn0.1QWOY5vqdE1YotdMU9glQ5WQfSOP2ckEkvqUwSCtgL0' \
@@ -118,7 +117,6 @@ curl --location --request GET 'http://mytest.local/api/transactions' \
 ```
 curl --location --request POST 'http://mytest.local/api/auth/login' \
 --header 'Content-Type: application/json' \
---header 'Cookie: XDEBUG_SESSION=www-data' \
 --header 'Cache-Control: no-cache' \
 --header 'Accept: application/json; version=v1' \
 --data-raw '{"email":"test1@mail.tes", "password":"123456"}'
