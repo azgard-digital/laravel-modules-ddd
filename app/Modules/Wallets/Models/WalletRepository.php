@@ -83,7 +83,6 @@ abstract class WalletRepository
             $walletFromBalance = $walletFrom->getAttribute('balance');
 
             if ($walletFromBalance < ($amount + $fee)) {
-                DB::rollBack();
                 throw new ResourceException('Not enough money for transaction');
             }
 
