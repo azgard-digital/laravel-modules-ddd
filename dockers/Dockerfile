@@ -10,7 +10,7 @@ RUN apt-get update -y \
     && apt-get install -y supervisor
 
 COPY --chown=www-data:www-data ./  /var/www
-COPY ./start.sh  /var/www/
+COPY ./dockers/start.sh  /var/www/
 
 COPY ./dockers/config/nginx/conf.d/sites.conf /etc/nginx/conf.d/sites.conf
 COPY ./dockers/config/nginx/conf.d/upstream_local.conf /etc/nginx/conf.d/upstream.conf

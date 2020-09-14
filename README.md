@@ -33,7 +33,7 @@ docker run --name postgres --network paxfuly-net -p 5432:5432 \
 docker build -t paxfuly_hw -f dockers/Dockerfile .
 ```
 
-- Get Mysql container ip for DB_HOST env
+- Get postgres container ip for DB_HOST env
 ```
 docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' postgres
 ```
