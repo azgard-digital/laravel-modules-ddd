@@ -8,5 +8,9 @@ use App\Interfaces\DAO\IUserAuthDAO;
 
 interface IUserService
 {
+    /**
+     * @param IUserCreateDAO $dao
+     * @return IUserAuthDAO
+     */
     public function create(IUserCreateDAO $dao):IUserAuthDAO;
 }

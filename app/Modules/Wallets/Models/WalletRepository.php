@@ -104,6 +104,10 @@ abstract class WalletRepository
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error($e->getMessage());
+
+            if ($e instanceof ResourceException) {
+                throw new ResourceException($e->getMessage());
+            }
         }
 
         return false;
