@@ -25,15 +25,21 @@ class WalletService implements IWalletService
      */
     private $usdRepository;
 
+    /**
+     * @var TransactionRepository
+     */
+    private $transactionRepository;
 
     public function __construct(
         WalletRepository $walletRepository,
         BtcConverterRepository $btcRepository,
-        UsdConverterRepository $usdRepository
+        UsdConverterRepository $usdRepository,
+        TransactionRepository $transactionRepository
     ) {
         $this->walletRepository = $walletRepository;
         $this->usdRepository = $usdRepository;
         $this->btcRepository = $btcRepository;
+        $this->transactionRepository = $transactionRepository;
     }
 
     public function limit():int
@@ -73,5 +79,11 @@ class WalletService implements IWalletService
     public function getWalletIdByAddress(string $address):int
     {
         return $this->walletRepository->getWalletIdByAddress($address);
+    }
+
+    public function getTransactionsByAddress(string $address):array
+    {
+        $walletId = $this->walletRepository->getWalletIdByAddress($address);
+        return $this->transactionRepository->getWalletTransactions($walletId);
     }
 }

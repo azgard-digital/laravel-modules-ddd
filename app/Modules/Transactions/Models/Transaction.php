@@ -19,4 +19,9 @@ class Transaction extends Model
         'user_id', 'wallet_id', 'status',
         'amount', 'fee', 'details',
     ];
+
+    public function wallet()
+    {
+        return $this->hasOne(Wallet::class, 'id', 'wallet_id');
+    }
 }

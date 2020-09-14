@@ -21,8 +21,8 @@ class Transaction implements ITransaction
         return $this->service->create($userId, $from, $to, $amount);
     }
 
-    public function getByUser(int $userId)
+    public function getUserTransactions(int $userId):array
     {
-        return $this->service->getByUser($userId);
+        return $this->service->getUserTransactions($userId);
     }
 }

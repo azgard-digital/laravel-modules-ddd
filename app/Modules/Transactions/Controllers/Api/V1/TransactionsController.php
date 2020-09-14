@@ -30,10 +30,10 @@ class TransactionsController extends Controller
         );
     }
 
-    public function show(ReceiveRequest $request)
+    public function index(ReceiveRequest $request)
     {
-        return new Responses\WalletResponse(
-            $this->transaction->getByAddress(
+        return new Responses\ReceiveResponse(
+            $this->transaction->getUserTransactions(
                 $request->getLoggedUserId()
             )
         );

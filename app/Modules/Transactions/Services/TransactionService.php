@@ -36,4 +36,14 @@ class TransactionService implements ITransactionService
     {
         return $this->walletRepository->isExistUserWallet($userId, $address);
     }
+
+    public function getUserTransactions(int $userId):array
+    {
+        return $this->transactionRepository->getUserTransactions($userId);
+    }
+
+    public function getWalletTransactions(int $walletId):array
+    {
+        return $this->transactionRepository->getWalletTransactions($walletId);
+    }
 }

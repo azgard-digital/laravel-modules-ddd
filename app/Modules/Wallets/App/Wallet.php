@@ -26,4 +26,10 @@ class Wallet implements IWallet
     {
         return $this->service->getByAddress($address, $userId);
     }
+
+    public function getTransactionsByAddress(string $address):array
+    {
+        return $this->service->getTransactionsByAddress($address);
+    }
+
 }

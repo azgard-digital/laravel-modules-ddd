@@ -24,7 +24,7 @@ interface ITransactionDAO
     public function getFee(): int;
 
     /**
-     * @return int
+     * @return bool
      */
-    public function getResult(): int;
+    public function getResult(): bool;
 }

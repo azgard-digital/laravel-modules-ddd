@@ -35,4 +35,13 @@ class WalletsController extends Controller
             )
         );
     }
+
+    public function transactions(string $address)
+    {
+        return new Responses\CollectionResponse(
+            $this->wallet->getTransactionsByAddress(
+                $address
+            )
+        );
+    }
 }

@@ -22,4 +22,8 @@ class ReceiveRequest extends FormRequest
         return $this->user()->id;
     }
 
+    public function rules()
+    {
+        return [];
+    }
 }

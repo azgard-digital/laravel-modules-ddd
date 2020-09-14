@@ -29,7 +29,7 @@ final class TransactionDAO implements ITransactionDAO
     private $fee;
 
     /**
-     * @var int
+     * @var bool
      */
     private $result;
 
@@ -75,9 +75,9 @@ final class TransactionDAO implements ITransactionDAO
     }
 
     /**
-     * @return int
+     * @return bool
      */
-    public function getResult(): int
+    public function getResult(): bool
     {
         return $this->result;
     }
