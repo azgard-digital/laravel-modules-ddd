@@ -1,12 +1,11 @@
 <?php
+declare(strict_types=1);
 
+namespace App\Modules\Users\DTO;
 
-namespace App\Modules\Users\DAO;
+use App\Interfaces\DTO\IUserCreateDTO;
 
-
-use App\Interfaces\DAO\IUserAuthDAO;
-
-final class UserAuthDAO implements IUserAuthDAO
+final class UserCreateDTO implements IUserCreateDTO
 {
     /**
      * @var string
@@ -21,25 +20,19 @@ final class UserAuthDAO implements IUserAuthDAO
     /**
      * @var string
      */
-    private $token;
+    private $password;
 
     /**
-     * @var string
-     */
-    private $expire;
-
-    /**
-     * UserCreateDAO constructor.
+     * UserCreateDTO constructor.
      * @param string $email
      * @param string $name
      * @param string $password
      */
-    public function __construct(string $email, string $name, string $token, string $expire)
+    public function __construct(string $email, string $name, string $password)
     {
         $this->email = $email;
         $this->name = $name;
-        $this->token = $token;
-        $this->expire = $expire;
+        $this->password = $password;
     }
 
     /**
@@ -61,16 +54,8 @@ final class UserAuthDAO implements IUserAuthDAO
     /**
      * @return string
      */
-    public function getToken(): string
+    public function getPassword(): string
     {
-        return $this->token;
-    }
-
-    /**
-     * @return string
-     */
-    public function getExpire(): string
-    {
-        return $this->expire;
+        return $this->password;
     }
 }

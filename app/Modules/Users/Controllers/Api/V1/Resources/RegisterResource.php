@@ -7,7 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * Class RegisterResponse
- * @package App\Modules\Users\Controllers\Api\V1\Responses
+ * @package App\Modules\Users\Controllers\Api\V1\Resources
  */
 class RegisterResponse extends JsonResource
 {

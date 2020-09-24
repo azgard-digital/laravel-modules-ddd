@@ -1,12 +1,11 @@
 <?php
+declare(strict_types=1);
 
+namespace App\Modules\Auth\DTO;
 
-namespace App\Modules\Auth\DAO;
+use App\Interfaces\DTO\IAuthLoginDTO;
 
-
-use App\Interfaces\DAO\IAuthLoginDAO;
-
-class AuthLoginDAO implements IAuthLoginDAO
+class AuthLoginDTO implements IAuthLoginDTO
 {
     /**
      * @var string
@@ -19,7 +18,7 @@ class AuthLoginDAO implements IAuthLoginDAO
     private $expire;
 
     /**
-     * AuthLoginDAO constructor.
+     * AuthLoginDTO constructor.
      * @param string $token
      * @param string $expire
      */
