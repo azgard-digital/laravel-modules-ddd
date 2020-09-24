@@ -1,24 +1,26 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Modules\Auth\Controllers\Api\V1;
 
 use App\Modules\Auth\Controllers\Api\V1\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
 use App\Interfaces\App\IAuth;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class AuthController extends Controller
 {
-    private $auth;
+    private $authApp;
 
-    public function __construct(IAuth $auth)
+    public function __construct(IAuth $authApp)
     {
-        $this->auth = $auth;
+        $this->authApp = $authApp;
     }
 
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): JsonResource
     {
-        return new Responses\LoginResponse(
-            $this->auth->login(
+        return new Resources\LoginResource(
+            $this->authApp->login(
                 $request->getEmail(),
                 $request->getPassword()
             )

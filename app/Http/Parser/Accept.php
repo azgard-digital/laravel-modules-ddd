@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Http\Parser;
 
@@ -28,18 +28,23 @@ final class Accept
      */
     private $version;
 
+    /**
+     * @var Request
+     */
+    private $request;
 
-    public function __construct()
+    public function __construct(Request $request)
     {
         $this->formats = config('accept.formats');
         $this->versions = config('accept.versions');
         $this->version = config('accept.version');
+        $this->request = $request;
     }
 
-    public function isAvailableFormat(Request $request):bool
+    public function isAvailableFormat(): bool
     {
-        $acceptHeader = $request->header('Accept', '');
-        $acceptHeader = explode(';',  $acceptHeader);
+        $acceptHeader = $this->request->header('Accept', '');
+        $acceptHeader = explode(';', $acceptHeader);
 
         if (!isset($acceptHeader[0]) || array_search($acceptHeader[0], $this->formats) === false) {
             return false;
@@ -48,16 +53,16 @@ final class Accept
         return true;
     }
 
-    public function parseApiVersion(Request $request):string
+    public function parseApiVersion(Request $request): string
     {
-        $acceptHeader = $request->header('Accept', '');
+        $acceptHeader = $this->request->header('Accept', '');
         $uri = $request->getRequestUri();
 
         if (!$acceptHeader || strpos($uri, "api") === false) {
             return '';
         }
 
-        $acceptHeader = explode(';',  $acceptHeader);
+        $acceptHeader = explode(';', $acceptHeader);
 
         if (!isset($acceptHeader[1])) {
             return $this->version;

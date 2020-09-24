@@ -1,22 +1,21 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Interfaces\Services;
 
-
-use App\Interfaces\DAO\IAuthLoginDAO;
+use App\DTO\AuthLoginDTO;
 
 interface IAuthService
 {
     /**
      * @param string $email
      * @param string $password
-     * @return IAuthLoginDAO
+     * @return AuthLoginDTO
      */
-    public function login(string $email, string $password):IAuthLoginDAO;
+    public function login(string $email, string $password): AuthLoginDTO;
 
     /**
      * @return int|null
      */
-    public function getLoggedUserId():?int;
+    public function getLoggedUserId(): ?int;
 }

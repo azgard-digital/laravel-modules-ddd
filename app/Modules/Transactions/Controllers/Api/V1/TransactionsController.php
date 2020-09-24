@@ -1,40 +1,43 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Modules\Transactions\Controllers\Api\V1;
 
-
 use App\Http\Controllers\Controller;
+use  App\Modules\Transactions\Controllers\Api\V1\Requests\TransactionCreateRequest;
 use App\Interfaces\App\ITransaction;
-use App\Modules\Transactions\Controllers\Api\V1\Requests\ReceiveRequest;
-use App\Modules\Transactions\Controllers\Api\V1\Requests\RegisterRequest;
+use  App\Modules\Transactions\Controllers\Api\V1\Resources\TransactionResource;
+use App\Modules\Transactions\Controllers\Api\V1\Resources\TransactionsResource;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class TransactionsController extends Controller
 {
-    private $transaction;
+    private $transactionApp;
 
-    public function __construct(ITransaction $transaction)
+    public function __construct(ITransaction $transactionApp)
     {
-        $this->transaction = $transaction;
+        $this->transactionApp = $transactionApp;
     }
 
-    public function store(RegisterRequest $request)
+    public function store(TransactionCreateRequest $request): JsonResource
     {
-        return new Responses\RegisterResponse(
-            $this->transaction->create(
-                $request->getLoggedUserId(),
-                $request->getWalletFrom(),
-                $request->getWalletTo(),
-                $request->getAmount()
+        return new TransactionResource(
+            $this->transactionApp->store(
+                (int)$request->user()->id,
+                $request->json('wallets.from'),
+                $request->json('wallets.to'),
+                (int)$request->get('amount')
             )
         );
     }
 
-    public function index(ReceiveRequest $request)
+    public function index(Request $request): ResourceCollection
     {
-        return new Responses\ReceiveResponse(
-            $this->transaction->getUserTransactions(
-                $request->getLoggedUserId()
+        return new TransactionsResource(
+            $this->transactionApp->transactions(
+                $request->user()->id
             )
         );
     }

@@ -1,12 +1,12 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Modules\Wallets\App;
 
-
 use App\Interfaces\App\IWallet;
-use App\Interfaces\DAO\IWalletDAO;
+use App\DTO\WalletDTO;
 use App\Interfaces\Services\IWalletService;
+use Illuminate\Support\Collection;
 
 class Wallet implements IWallet
 {
@@ -17,17 +17,17 @@ class Wallet implements IWallet
         $this->service = $service;
     }
 
-    public function create(int $userId):IWalletDAO
+    public function store(int $userId): WalletDTO
     {
         return $this->service->create($userId);
     }
 
-    public function getByAddress(string $address, int $userId):IWalletDAO
+    public function show(string $address, int $userId): WalletDTO
     {
-        return $this->service->getByAddress($address, $userId);
+        return $this->service->getWalletByAddress($address, $userId);
     }
 
-    public function getTransactionsByAddress(string $address):array
+    public function transactions(string $address): Collection
     {
         return $this->service->getTransactionsByAddress($address);
     }

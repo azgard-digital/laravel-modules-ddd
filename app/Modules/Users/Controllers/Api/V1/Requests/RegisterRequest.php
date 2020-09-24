@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Modules\Users\Controllers\Api\V1\Requests;
 
@@ -11,22 +12,22 @@ class RegisterRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
 
-    public function getName():string
+    public function getName(): string
     {
         return $this->get('name');
     }
 
-    public function getEmail():string
+    public function getEmail(): string
     {
         return $this->get('email');
     }
 
-    public function getPassword():string
+    public function getPassword(): string
     {
         return $this->get('password');
     }
@@ -36,7 +37,7 @@ class RegisterRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name' => 'required|string|max:255',

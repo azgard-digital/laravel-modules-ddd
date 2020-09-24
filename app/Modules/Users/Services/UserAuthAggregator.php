@@ -1,13 +1,14 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Modules\Users\Services;
 
+use App\DTO\AuthLoginDTO;
 use App\Exceptions\StoreResourceFailedException;
-use App\Interfaces\DAO\IAuthLoginDAO;
-use App\Interfaces\DAO\IUserAuthDAO;
-use App\Interfaces\DAO\IUserCreateDAO;
-use App\Modules\Users\DAO\UserAuthDAO;
+use App\DTO\UserAuthDTO;
+use App\DTO\UserCreateDTO;
+use App\Modules\Users\Models\UserRepository;
+use App\Interfaces\Services\IAuthService;
 
 class UserAuthAggregator
 {
@@ -17,38 +18,38 @@ class UserAuthAggregator
     private $userRepository;
 
     /**
-     * @var AuthRepository
+     * @var IAuthService
      */
-    private $authRepository;
+    private $authService;
 
     /**
      * UserAuthAggregator constructor.
      * @param UserRepository $userRepository
-     * @param AuthRepository $authRepository
+     * @param IAuthService $authService
      */
-    public function __construct(UserRepository $userRepository, AuthRepository $authRepository)
+    public function __construct(UserRepository $userRepository, IAuthService $authService)
     {
         $this->userRepository = $userRepository;
-        $this->authRepository = $authRepository;
+        $this->authService = $authService;
     }
 
     /**
-     * @param IUserCreateDAO $dao
-     * @return IUserAuthDAO
+     * @param UserCreateDTO $dao
+     * @return UserAuthDTO
      */
-    public function createAndAuthorize(IUserCreateDAO $dao):IUserAuthDAO
+    public function createAndAuthorize(UserCreateDTO $dto): UserAuthDTO
     {
-        if ($this->userRepository->create($dao)) {
+        if ($this->userRepository->create($dto)) {
             /**
-             * @var IAuthLoginDAO $authDao
+             * @var AuthLoginDTO $authDto
              */
-            $authDao = $this->authRepository->login($dao->getEmail(), $dao->getPassword());
+            $authDto = $this->authService->login($dto->getEmail(), $dto->getPassword());
 
-            return new UserAuthDAO(
-                $dao->getEmail(),
-                $dao->getName(),
-                $authDao->getToken(),
-                $authDao->getExpire()
+            return new UserAuthDTO(
+                $dto->getEmail(),
+                $dto->getName(),
+                $authDto->getToken(),
+                $authDto->getExpire()
             );
         }
 

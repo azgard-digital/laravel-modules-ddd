@@ -1,13 +1,13 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Modules\Users\Models;
 
-
 use App\Exceptions\StoreResourceFailedException;
+use App\DTO\UserCreateDTO;
 use Illuminate\Support\Facades\Log;
 
-abstract class UserRepository
+class UserRepository
 {
     /**
      * @param string $email
@@ -15,16 +15,18 @@ abstract class UserRepository
      * @param string $password
      * @return bool|StoreResourceFailedException
      */
-    public static function create(string $email, string $name, string $password):bool
+    public static function create(UserCreateDTO $dto): bool
     {
         try {
-            $model = new User([
-                'name' => $name,
-                'email' => $email,
-                'password' => bcrypt($password)
+            $model = new User();
+
+            $model->fill([
+                'name' => $dto->getName(),
+                'email' => $dto->getEmail(),
+                'password' => bcrypt($dto->getPassword())
             ]);
 
-            return (bool)$model->save();
+            return $model->save();
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             throw new StoreResourceFailedException('User has not been created!');

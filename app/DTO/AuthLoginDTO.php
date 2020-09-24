@@ -1,11 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\Auth\DTO;
+namespace App\DTO;
 
-use App\Interfaces\DTO\IAuthLoginDTO;
-
-class AuthLoginDTO implements IAuthLoginDTO
+class AuthLoginDTO
 {
     /**
      * @var string

@@ -1,10 +1,10 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Interfaces\Services;
 
-
-use App\Interfaces\DAO\ITransactionDAO;
+use App\DTO\TransactionDTO;
+use Illuminate\Database\Eloquent\Collection;
 
 interface ITransactionService
 {
@@ -13,26 +13,13 @@ interface ITransactionService
      * @param string $from
      * @param string $to
      * @param int $amount
-     * @return ITransactionDAO
+     * @return TransactionDTO
      */
-    public function create(int $userId, string $from, string $to, int $amount):ITransactionDAO;
+    public function create(int $userId, string $from, string $to, int $amount): TransactionDTO;
 
     /**
      * @param int $userId
-     * @param string $address
-     * @return bool
+     * @return Collection
      */
-    public function isExistUserWallet(int $userId, string $address):bool;
-
-    /**
-     * @param int $userId
-     * @return array
-     */
-    public function getUserTransactions(int $userId):array;
-
-    /**
-     * @param int $walletId
-     * @return array
-     */
-    public function getWalletTransactions(int $walletId):array;
+    public function getUserTransactions(int $userId): Collection;
 }

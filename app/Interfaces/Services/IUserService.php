@@ -1,16 +1,16 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Interfaces\Services;
 
-use App\Interfaces\DAO\IUserCreateDAO;
-use App\Interfaces\DAO\IUserAuthDAO;
+use App\DTO\UserCreateDTO;
+use App\DTO\UserAuthDTO;
 
 interface IUserService
 {
     /**
-     * @param IUserCreateDAO $dao
-     * @return IUserAuthDAO
+     * @param UserCreateDTO $dao
+     * @return UserAuthDTO
      */
-    public function create(IUserCreateDAO $dao):IUserAuthDAO;
+    public function create(UserCreateDTO $dao): UserAuthDTO;
 }

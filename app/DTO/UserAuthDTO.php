@@ -1,11 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Modules\Users\DTO;
+namespace App\DTO;
 
-use App\Interfaces\DTO\IUserAuthDTO;
-
-final class UserAuthDTO implements IUserAuthDTO
+final class UserAuthDTO
 {
     /**
      * @var string

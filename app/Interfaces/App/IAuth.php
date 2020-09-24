@@ -1,12 +1,11 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Interfaces\App;
 
-
-use App\Interfaces\DAO\IAuthLoginDAO;
+use App\DTO\AuthLoginDTO;
 
 interface IAuth
 {
-    public function login(string $email, string $password):IAuthLoginDAO;
+    public function login(string $email, string $password): AuthLoginDTO;
 }

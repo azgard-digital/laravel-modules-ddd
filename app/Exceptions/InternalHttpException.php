@@ -19,15 +19,20 @@ class InternalHttpException extends HttpException
      * Create a new internal HTTP exception instance.
      *
      * @param \Symfony\Component\HttpFoundation\Response $response
-     * @param string                                     $message
-     * @param \Exception                                 $previous
-     * @param array                                      $headers
-     * @param int                                        $code
+     * @param string $message
+     * @param \Exception $previous
+     * @param array $headers
+     * @param int $code
      *
      * @return void
      */
-    public function __construct(Response $response, $message = null, Exception $previous = null, array $headers = [], $code = 0)
-    {
+    public function __construct(
+        Response $response,
+        $message = null,
+        Exception $previous = null,
+        array $headers = [],
+        $code = 0
+    ) {
         $this->response = $response;
 
         parent::__construct($response->getStatusCode(), $message, $previous, $headers, $code);

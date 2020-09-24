@@ -1,14 +1,12 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Modules\Users\App;
 
-
 use App\Interfaces\App\IUser;
-use App\Modules\Users\DAO\UserCreateDAO;
-use App\Interfaces\DAO\IUserAuthDAO;
-use App\Modules\Users\Interfaces\DAO\IUserDAO;
+use App\DTO\UserCreateDTO;
 use App\Interfaces\Services\IUserService;
+use App\DTO\UserAuthDTO;
 
 class User implements IUser
 {
@@ -19,8 +17,8 @@ class User implements IUser
         $this->service = $service;
     }
 
-    public function create(string $email, string $name, string $password):IUserAuthDAO
+    public function store(string $email, string $name, string $password): UserAuthDTO
     {
-        return $this->service->create(new UserCreateDAO($email, $name, $password));
+        return $this->service->create(new UserCreateDTO($email, $name, $password));
     }
 }

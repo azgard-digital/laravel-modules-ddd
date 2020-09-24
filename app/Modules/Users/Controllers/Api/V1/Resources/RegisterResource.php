@@ -1,20 +1,20 @@
 <?php
+declare(strict_types=1);
 
-
-namespace App\Modules\Users\Controllers\Api\V1\Responses;
+namespace App\Modules\Users\Controllers\Api\V1\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * Class RegisterResponse
+ * Class RegisterResource
  * @package App\Modules\Users\Controllers\Api\V1\Resources
  */
-class RegisterResponse extends JsonResource
+class RegisterResource extends JsonResource
 {
     /**
      * @inheritDoc
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         return [
             'name' => $this->resource->getName(),

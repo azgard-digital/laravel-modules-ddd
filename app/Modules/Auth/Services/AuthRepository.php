@@ -1,29 +1,36 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Modules\Auth\Services;
 
-
 use App\Exceptions\AuthorizationException;
-use App\Interfaces\DAO\IAuthLoginDAO;
-use App\Modules\Auth\DAO\AuthLoginDAO;
+use App\DTO\AuthLoginDTO;
+use Tymon\JWTAuth\JWTAuth;
 
 class AuthRepository
 {
-    public function login(string $email, string $password):IAuthLoginDAO
+    private $authManager;
+
+    public function __construct(JWTAuth $authManager)
     {
-        if (!$token = auth()->attempt(['email' => $email, 'password' => $password])) {
+        $this->authManager = $authManager;
+    }
+
+    public function login(string $email, string $password): AuthLoginDTO
+    {
+        if (!$this->authManager->attempt(['email' => $email, 'password' => $password])) {
             throw new AuthorizationException('Invalid email or password');
         }
 
-        $expire = auth()->factory()->getTTL();
+        $token = $this->authManager->getToken()->get();
+        $expire = (string)$this->authManager->factory()->getTTL();
 
-        return new AuthLoginDAO($token, $expire);
+        return new AuthLoginDTO($token, $expire);
     }
 
-    public function getLoggedUserId():?int
+    public function getLoggedUserId(): ?int
     {
-        $user = auth()->user();
+        $user = $this->authManager->user();
 
         if ($user) {
             return (int)$user->id;

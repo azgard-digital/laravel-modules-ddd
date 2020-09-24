@@ -1,11 +1,10 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Modules\Auth\App;
 
-
+use App\DTO\AuthLoginDTO;
 use App\Interfaces\App\IAuth;
-use App\Interfaces\DAO\IAuthLoginDAO;
 use App\Interfaces\Services\IAuthService;
 
 class Auth implements IAuth
@@ -17,7 +16,7 @@ class Auth implements IAuth
         $this->service = $service;
     }
 
-    public function login(string $email, string $password):IAuthLoginDAO
+    public function login(string $email, string $password): AuthLoginDTO
     {
         return $this->service->login($email, $password);
     }

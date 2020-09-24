@@ -1,8 +1,9 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Exceptions;
 
+use Illuminate\Support\MessageBag;
 
 interface MessageBagErrors
 {
@@ -11,12 +12,12 @@ interface MessageBagErrors
      *
      * @return \Illuminate\Support\MessageBag
      */
-    public function getErrors();
+    public function getErrors(): MessageBag;
 
     /**
      * Determine if message bag has any errors.
      *
      * @return bool
      */
-    public function hasErrors();
+    public function hasErrors(): bool;
 }

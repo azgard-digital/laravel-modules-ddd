@@ -1,8 +1,7 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Modules\Wallets\Models;
-
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,6 +23,8 @@ class Wallet extends Model
      * @var array
      */
     protected $fillable = [
-        'address', 'balance', 'user_id',
+        'address',
+        'balance',
+        'user_id',
     ];
 }

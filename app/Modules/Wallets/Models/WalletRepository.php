@@ -1,129 +1,101 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Modules\Wallets\Models;
 
 use App\Exceptions\ResourceException;
-use App\Exceptions\ServerException;
-use App\Exceptions\StoreResourceFailedException;
+use App\Interfaces\Services\ICalculator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
-abstract class WalletRepository
+class WalletRepository
 {
-    public static function create(int $balance, int $user, string $address):bool
+    public function takeTransaction(string $from, ICalculator $calculate): void
     {
-        try {
-            $model = new Wallet([
-                'balance' => $balance,
-                'user_id' => $user,
-                'address' => $address
-            ]);
-
-            return (bool)$model->save();
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            throw new StoreResourceFailedException('Wallet has not been created!');
-        }
-    }
-
-    public static function countByUser(int $user):int
-    {
-        try {
-            return (int)Wallet::where('user_id', $user)->count();
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            throw new ServerException('Server error');
-        }
-    }
-
-    public static function getByAddress(string $address, int $user):int
-    {
-        try {
-            $wallet = Wallet::select('balance')
-                ->where('user_id', $user)
-                ->where('address', $address)
-                ->first();
-
-            if (!$wallet) {
-                throw new ResourceException('Wallet has not been found!');
-            }
-
-            return (int)$wallet->getAttribute('balance');
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            throw new ServerException('Server error');
-        }
-    }
-
-    public static function isExistUserWallet(int $user, string $address):bool
-    {
-        try {
-            return Wallet::query()
-                ->where('user_id', $user)
-                ->where('address', $address)
-                ->exists();
-
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            throw new ServerException('Server error');
-        }
-    }
-
-    public static function processTransaction(string $from, string $to, int $amount, int $fee):bool
-    {
-        try {
-            DB::beginTransaction();
-            DB::statement('SET TRANSACTION ISOLATION LEVEL SERIALIZABLE');
+        DB::transaction(function () use ($from, $calculate) {
             $walletFrom = Wallet::query()
                 ->where('address', $from)
                 ->lockForUpdate()
                 ->first();
 
-            $walletFromBalance = $walletFrom->getAttribute('balance');
+            $walletFromBalance = $walletFrom->balance;
 
-            if ($walletFromBalance < ($amount + $fee)) {
+            if ($walletFromBalance < $calculate->calculateAmountWithFee()) {
                 throw new ResourceException('Not enough money for transaction');
             }
 
+            $walletFrom->balance = $calculate->calculateFromBalance($walletFromBalance);
+            $walletFrom->save();
+        });
+    }
+
+    public function putTransaction(string $to, ICalculator $calculate): void
+    {
+        DB::transaction(function () use ($to, $calculate) {
             $walletTo = Wallet::query()
                 ->where('address', $to)
                 ->lockForUpdate()
                 ->first();
 
-            $walletToBalance = $walletTo->getAttribute('balance');
+            $walletToBalance = $walletTo->balance;
 
-            $walletFrom->balance = $walletFromBalance - ($amount + $fee);
-            $walletTo->balance = $walletToBalance + $amount;
-
-            $walletFrom->save();
+            $walletTo->balance = $calculate->calculateToBalance($walletToBalance);
             $walletTo->save();
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error($e->getMessage());
-
-            if ($e instanceof ResourceException) {
-                throw new ResourceException($e->getMessage());
-            }
-        }
-
-        return false;
+        });
     }
 
-    public static function getWalletIdByAddress(string $address):int
+    public function getTransactionsByAddress(string $address): Collection
     {
-        try {
-            $wallet = Wallet::query()
-                ->select(['id'])
-                ->where('address', $address)
-                ->first();
+        return DB::table('wallets')
+            ->join('transactions', 'wallets.id', '=', 'transactions.wallet_id')
+            ->where('wallets.address', $address)
+            ->get([
+                'transactions.id',
+                'transactions.created_at',
+                'transactions.updated_at',
+                'transactions.status',
+                'transactions.amount',
+                'transactions.fee'
+            ]);
+    }
 
-            return (int)$wallet->getAttribute('id');
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            throw new ServerException('Server error');
+    public function getWalletsCount(int $userId): int
+    {
+        return Wallet::query()->where('user_id', $userId)->count();
+    }
+
+    public function getUserWalletByAddress(string $address, int $userId): ?Wallet
+    {
+        $wallet = Wallet::query()
+            ->where('user_id', $userId)
+            ->where('address', $address)
+            ->first();
+
+        if (($wallet instanceof Wallet) === false) {
+            return null;
         }
+
+        return $wallet;
+    }
+
+    public function isUserWalletExist(int $userId, string $address): bool
+    {
+        return Wallet::query()
+            ->where('user_id', $userId)
+            ->where('address', $address)
+            ->exists();
+    }
+
+    public function createUserWallet(int $userId, string $address, int $balance): bool
+    {
+        $model = new Wallet();
+
+        $wallet = $model->fill([
+            'balance' => $balance,
+            'user_id' => $userId,
+            'address' => $address
+        ]);
+
+        return $wallet->save();
     }
 }

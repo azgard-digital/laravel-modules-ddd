@@ -1,8 +1,7 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Modules\Wallets\Services;
-
 
 use App\Interfaces\Services\IRate;
 use Illuminate\Support\Facades\Cache;
@@ -28,7 +27,7 @@ final class Rate implements IRate
         }
     }
 
-    private function loadContent():?string
+    private function loadContent(): ?string
     {
         if (Cache::has(self::CACHE_KEY)) {
             return Cache::get(self::CACHE_KEY);
@@ -44,12 +43,12 @@ final class Rate implements IRate
         return null;
     }
 
-    public function isConvertible():bool
+    public function isConvertible(): bool
     {
         return is_float($this->usdRate);
     }
 
-    public function getUsd():?float
+    public function getUsd(): ?float
     {
         return $this->usdRate;
     }

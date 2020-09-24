@@ -1,33 +1,23 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Modules\Users\Services;
 
-use App\Interfaces\DAO\IUserAuthDAO;
-use App\Interfaces\DAO\IUserCreateDAO;
+use App\DTO\UserAuthDTO;
+use App\DTO\UserCreateDTO;
 use App\Interfaces\Services\IUserService;
 
 class UserService implements IUserService
 {
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
+    private $userAuthAggregator;
 
-    /**
-     * @var AuthRepository
-     */
-    private $authRepository;
-
-    public function __construct(UserRepository $userRepository, AuthRepository $authRepository)
+    public function __construct(UserAuthAggregator $userAuthAggregator)
     {
-        $this->userRepository = $userRepository;
-        $this->authRepository = $authRepository;
+        $this->userAuthAggregator = $userAuthAggregator;
     }
 
-    public function create(IUserCreateDAO $dao):IUserAuthDAO
+    public function create(UserCreateDTO $dto): UserAuthDTO
     {
-        $aggregate = new UserAuthAggregator($this->userRepository, $this->authRepository);
-        return $aggregate->createAndAuthorize($dao);
+        return $this->userAuthAggregator->createAndAuthorize($dto);
     }
 }

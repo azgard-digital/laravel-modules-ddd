@@ -1,25 +1,28 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Modules\Auth;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
+use App\Interfaces\Services\IAuthService;
+use App\Modules\Auth\Services\AuthService;
+use App\Interfaces\App\IAuth;
+use App\Modules\Auth\App\Auth;
 
 /**
  * Class AuthServiceProvider
  * @package App\Modules\Users
  * @method \App\Http\Parser\Accept parseApiVersion()
  */
-class AuthServiceProvider extends ServiceProvider {
-
+class AuthServiceProvider extends ServiceProvider
+{
     protected $defer = false;
 
     public function boot()
     {
-        $request = request();
-
         /** register api v1 routes */
-        if (app()->get('accept')->parseApiVersion($request) === 'v1') {
+        if ($this->app->get('accept')->parseApiVersion() === 'v1') {
             Route::prefix('api')
                 ->middleware('api')
                 ->namespace('App\Modules\Auth\Controllers\Api\V1')
@@ -29,8 +32,8 @@ class AuthServiceProvider extends ServiceProvider {
 
     public function register()
     {
-        $this->app->bind('App\Interfaces\Services\IAuthService', 'App\Modules\Auth\Services\AuthService');
-        $this->app->bind('App\Interfaces\App\IAuth', 'App\Modules\Auth\App\Auth');
+        $this->app->singleton(IAuthService::class, AuthService::class);
+        $this->app->singleton(IAuth::class, Auth::class);
     }
 
 }

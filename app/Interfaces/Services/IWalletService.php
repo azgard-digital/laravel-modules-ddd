@@ -1,64 +1,62 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Interfaces\Services;
 
-use App\Interfaces\DAO\IWalletDAO;
+use App\DTO\WalletDTO;
+use Illuminate\Support\Collection;
 
 interface IWalletService
 {
-    const WALLETS_LIMIT = 9;
-    const DEFAULT_BALANCE = 100000000;
-
     /**
-     * @return int
+     * @param int $userId
+     * @return bool
      */
-    public function limit():int;
+    public function isLimited(int $userId): bool;
 
     /**
      * @param int $userId
-     * @return IWalletDAO
+     * @return WalletDTO
      */
-    public function create(int $userId):IWalletDAO;
+    public function create(int $userId): WalletDTO;
 
     /**
      * @param string $address
      * @param int $userId
-     * @return IWalletDAO
+     * @return WalletDTO
      */
-    public function getByAddress(string $address, int $userId):IWalletDAO;
-
-    /**
-     * @param int $userId
-     * @return int
-     */
-    public function count(int $userId):int;
+    public function getWalletByAddress(string $address, int $userId): WalletDTO;
 
     /**
      * @param int $userId
      * @param string $address
      * @return bool
      */
-    public function isExistUserWallet(int $userId, string $address):bool;
+    public function isWalletExist(int $userId, string $address): bool;
+
+    /**
+     * @param string $to
+     * @param ICalculator $calculate
+     */
+    public function putTransaction(string $to, ICalculator $calculate): void;
 
     /**
      * @param string $from
-     * @param string $to
-     * @param int $amount
-     * @param int $fee
-     * @return bool
+     * @param ICalculator $calculate
      */
-    public function processTransaction(string $from, string $to, int $amount, int $fee):bool;
+    public function takeTransaction(string $from, ICalculator $calculate): void;
 
     /**
      * @param string $address
-     * @return int
+     * @param int $userId
+     * @return int|null
      */
-    public function getWalletIdByAddress(string $address):int;
+    public function getWalletIdByAddress(string $address, int $userId): ?int;
 
     /**
      * @param string $address
-     * @return array
+     * @return Collection
      */
-    public function getTransactionsByAddress(string $address):array;
+    public function getTransactionsByAddress(string $address): Collection;
 }
+

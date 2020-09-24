@@ -1,67 +1,41 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Modules\Transactions\Models;
 
-use App\Exceptions\ServerException;
-use App\Exceptions\StoreResourceFailedException;
-use App\Interfaces\ITransactionStatus;
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Support\Facades\Log;
+use App\DTO\TransactionDTO;
+use Illuminate\Database\Eloquent\Collection;
 
-abstract class TransactionRepository
+class TransactionRepository
 {
-    public static function create(
-        string $from,
-        string $to,
-        int $amount,
-        int $fee,
-        bool $result,
-        int $userId,
-        int $walletId
-    ) {
-        try {
-            $model = new Transaction([
-                'user_id' => $userId,
-                'wallet_id' => $walletId,
-                'amount' => $amount,
-                'fee' => $fee,
-                'status' => ($result) ? ITransactionStatus::SUCCESS : ITransactionStatus::FAIL,
-                'details' => "Transaction from {$from} to {$to} wallet"
+    public function getUserTransactions(int $userId): Collection
+    {
+        return Transaction::query()
+            ->where('user_id', $userId)
+            ->get([
+                'id',
+                'created_at',
+                'updated_at',
+                'status',
+                'amount',
+                'fee',
+                'details'
             ]);
-
-            return (bool)$model->save();
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            throw new StoreResourceFailedException('Transaction has not been created!');
-        }
     }
 
-    public static function getUserTransactions(int $user):Arrayable
+    public function createUserTransaction(TransactionDTO $dto): bool
     {
-        try {
-            return Transaction::query()
-                ->where('user_id', $user)
-                ->with('wallet')
-                ->get();
+        $model = new Transaction();
 
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            throw new ServerException('Server error');
-        }
-    }
+        $transaction = $model->fill([
+            'user_id' => $dto->getUserId(),
+            'wallet_id' => $dto->getWalletId(),
+            'amount' => $dto->getAmount(),
+            'fee' => $dto->getFee(),
+            'status' => $dto->getResult(),
+            'details' => ['from' => $dto->getFrom(), 'to' => $dto->getTo()]
+        ]);
 
-    public static function getWalletTransactions(int $wallet):Arrayable
-    {
-        try {
-            return Transaction::query()
-                ->where('wallet_id', $wallet)
-                ->with('wallet')
-                ->get();
-
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            throw new ServerException('Server error');
-        }
+        return $transaction->save();
     }
 }

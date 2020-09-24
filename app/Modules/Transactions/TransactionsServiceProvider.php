@@ -1,10 +1,12 @@
 <?php
 namespace App\Modules\Transactions;
 
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
+use App\Interfaces\Services\ITransactionService;
+use App\Modules\Transactions\Services\TransactionService;
+use App\Interfaces\App\ITransaction;
+use App\Modules\Transactions\App\Transaction;
 
 /**
  * Class TransactionsServiceProvider
@@ -17,32 +19,19 @@ class TransactionsServiceProvider extends ServiceProvider {
 
     public function boot()
     {
-        $request = request();
-
         /** register api v1 routes */
-        if (app()->get('accept')->parseApiVersion($request) === 'v1') {
+        if ($this->app->get('accept')->parseApiVersion() === 'v1') {
             Route::prefix('api')
                 ->middleware('api')
                 ->namespace('App\Modules\Transactions\Controllers\Api\V1')
                 ->group(__DIR__ . '/Controllers/Api/V1/routes.php');
         }
-
-        Validator::extendImplicit('isCorrectTransactionWallet', function($attribute, $value, $parameters) {
-            $user = $this->app->get('App\Interfaces\Services\IAuthService')->getLoggedUserId();
-
-            if (!$user) {
-                return false;
-            }
-
-            return $this->app->get('App\Interfaces\Services\ITransactionService')
-                ->isExistUserWallet($user, $value);
-        });
     }
 
     public function register()
     {
-        $this->app->bind('App\Interfaces\Services\ITransactionService', 'App\Modules\Transactions\Services\TransactionService');
-        $this->app->bind('App\Interfaces\App\ITransaction', 'App\Modules\Transactions\App\Transaction');
+        $this->app->singleton(ITransactionService::class, TransactionService::class);
+        $this->app->singleton(ITransaction::class, Transaction::class);
     }
 
 }

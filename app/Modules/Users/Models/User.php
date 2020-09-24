@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Modules\Users\Models;
 
@@ -12,7 +13,9 @@ class User extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name',
+        'email',
+        'password',
     ];
 
     /**
@@ -22,5 +25,14 @@ class User extends Model
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+    ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password',
     ];
 }

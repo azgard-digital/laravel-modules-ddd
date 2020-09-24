@@ -1,9 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use App\Http\Parser\Accept;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -36,7 +38,7 @@ class RouteServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->app->singleton('accept', '\App\Http\Parser\Accept');
+        $this->app->singleton('accept', Accept::class);
         parent::register();
     }
 

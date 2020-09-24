@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Modules\Transactions\Models;
 
@@ -16,8 +17,12 @@ class Transaction extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'wallet_id', 'status',
-        'amount', 'fee', 'details',
+        'user_id',
+        'wallet_id',
+        'status',
+        'amount',
+        'fee',
+        'details',
     ];
 
     public function wallet()

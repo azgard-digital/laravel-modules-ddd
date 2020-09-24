@@ -1,25 +1,28 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Modules\Users;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
+use App\Interfaces\Services\IUserService;
+use App\Modules\Users\Services\UserService;
+use App\Interfaces\App\IUser;
+use App\Modules\Users\App\User;
 
 /**
  * Class UsersServiceProvider
  * @package App\Modules\Users
  * @method \App\Http\Parser\Accept parseApiVersion()
  */
-class UsersServiceProvider extends ServiceProvider {
-
+class UsersServiceProvider extends ServiceProvider
+{
     protected $defer = false;
 
     public function boot()
     {
-        $request = request();
-
         /** register api v1 routes */
-        if (app()->get('accept')->parseApiVersion($request) === 'v1') {
+        if ($this->app->get('accept')->parseApiVersion() === 'v1') {
             Route::prefix('api')
                 ->middleware('api')
                 ->namespace('App\Modules\Users\Controllers\Api\V1')
@@ -29,8 +32,7 @@ class UsersServiceProvider extends ServiceProvider {
 
     public function register()
     {
-        $this->app->bind('App\Interfaces\Services\IUserService', 'App\Modules\Users\Services\UserService');
-        $this->app->bind('App\Interfaces\App\IUser', 'App\Modules\Users\App\User');
+        $this->app->singleton(IUserService::class, UserService::class);
+        $this->app->singleton(IUser::class, User::class);
     }
-
 }

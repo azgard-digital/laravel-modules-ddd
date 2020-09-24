@@ -1,12 +1,12 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Modules\Transactions\App;
 
-
+use App\DTO\TransactionDTO;
 use App\Interfaces\App\ITransaction;
-use App\Interfaces\DAO\ITransactionDAO;
 use App\Interfaces\Services\ITransactionService;
+use Illuminate\Database\Eloquent\Collection;
 
 class Transaction implements ITransaction
 {
@@ -17,12 +17,12 @@ class Transaction implements ITransaction
         $this->service = $service;
     }
 
-    public function create(int $userId, string $from, string $to, int $amount):ITransactionDAO
+    public function store(int $userId, string $from, string $to, int $amount): TransactionDTO
     {
         return $this->service->create($userId, $from, $to, $amount);
     }
 
-    public function getUserTransactions(int $userId):array
+    public function transactions(int $userId): Collection
     {
         return $this->service->getUserTransactions($userId);
     }

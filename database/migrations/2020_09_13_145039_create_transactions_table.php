@@ -21,7 +21,7 @@ class CreateTransactionsTable extends Migration
             $table->integer('status')->nullable(false);
             $table->bigInteger('amount')->nullable(false);
             $table->bigInteger('fee')->nullable(false)->default(0);
-            $table->text('details')->nullable(true);
+            $table->json('details')->nullable(true);
         });
     }
 
